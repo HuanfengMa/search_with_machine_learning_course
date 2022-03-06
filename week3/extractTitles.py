@@ -3,6 +3,11 @@ import random
 import xml.etree.ElementTree as ET
 import argparse
 from pathlib import Path
+import nltk
+from nltk.stem import SnowballStemmer
+
+stemmer = SnowballStemmer("english")
+tokenizer = nltk.RegexpTokenizer(r"\w+")
 
 directory = r'/workspace/search_with_machine_learning_course/data/pruned_products'
 parser = argparse.ArgumentParser(description='Process some integers.')
@@ -26,8 +31,12 @@ if args.input:
 sample_rate = args.sample_rate
 
 def transform_training_data(name):
-    # IMPLEMENT
-    return name.replace('\n', ' ')
+    # use nltk tokenizer to remove punctuations
+    tokens = tokenizer.tokenize(name.replace('\n', ' ').lower())
+
+    # remove numbers from titles
+    str_tokens = [s for s in tokens if not s.isnumeric()]
+    return " ".join(list(map(lambda wd : stemmer.stem(wd), str_tokens)))
 
 # Directory for product data
 
