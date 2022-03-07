@@ -34,9 +34,7 @@ def transform_training_data(name):
     # use nltk tokenizer to remove punctuations
     tokens = tokenizer.tokenize(name.replace('\n', ' ').lower())
 
-    # remove numbers from titles
-    str_tokens = [s for s in tokens if not s.isnumeric()]
-    return " ".join(list(map(lambda wd : stemmer.stem(wd), str_tokens)))
+    return " ".join(list(map(lambda wd : stemmer.stem(wd), tokens)))
 
 # Directory for product data
 
