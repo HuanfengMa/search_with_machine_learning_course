@@ -1,0 +1,48 @@
+1. For query classification:
+    a. How many unique categories did you see in your rolled up training data when you set the minimum number of queries per category to 100? To 1000?
+    For min_queries = 100, I got 849 unique categories
+    For min_queries = 1000, I got 332 unique categories
+
+    b. What values did you achieve for P@1, R@3, and R@5? You should have tried at least a few different models, varying the minimum number of queries per category as well as trying different fastText parameters or query normalization. Report at least 3 of your runs.
+    I used 50k training samples and 50k testing samples for all cases.
+    (1) No category rollup
+        (a) Default fasttext parameters
+            P@1 0.468
+            R@3 0.613
+            R@5 0.675
+        (b) Fasttext parameters: -epoch 25 -lr 0.5 -wordNgrams 2
+            P@1 0.518
+            R@3 0.697
+            R@5 0.761
+    (2) min_queries = 100 (849 unique categories)
+        (a) Default fastext parameters
+            P@1 0.468
+            R@3 0.614
+            R@5 0.677
+        (b) Fasttext parameters: -epoch 25 -lr 0.5 -wordNgrams 2
+            P@1 0.513
+            R@3 0.693
+            R@5 0.758
+    (3) min_queries = 1000 (332 unique categories)
+        (a) Default fasttext parameters
+            P@1 0.489
+            R@3 0.656 
+            R@5 0.721
+        (b) Fasttext parameters: -epoch 25 -lr 0.5 -wordNgrams 2
+            P@1 0.52
+            R@3 0.707
+            R@5 0.773
+
+2. For integrating query classification with search:
+    The model I used is the model trained using the following parameters:
+        min_queries = 100
+        trained with -epoch 25 -lr 0.5 -wordNgrams 2
+        threshold for model preticted category score is 0.3 (0.5 seems too high in my testing although I have not figured out the reason yet)
+
+    a. Give 2 or 3 examples of queries where you saw a dramatic positive change in the results because of filtering. Make sure to include the classifier output for those queries.
+       (1) "iphone": without filtering, it returns 3241 hits, with filtering it returns 63 hits, predicted category is ['pcmcat209400050001']
+       (2) "hp printer": withou filtering, it returns 6606 hits, with filtering, it returns 301 hits, predicted category is ['abcat0511004']
+       (3) "no string attached": without filtering, it returns   
+    b. Given 2 or 3 examples of queries where filtering hurt the results, either because the classifier was wrong or for some other reason. Again, include the classifier output for those queries.
+       (1) "iphone case": without filtering, it returns 10000 hits, with filtering it returns nothing, predicted category is ['pcmcat171900050029', 'pcmcat214700050000']
+       (2) "ear phone": without filtering, it returns 7302 hits, with filters it returnes nothing, predicted category is ['pcmcat144700050004', 'pcmcat143000050007'] 
