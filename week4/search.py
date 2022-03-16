@@ -70,7 +70,7 @@ def get_query_category(user_query, query_class_model):
     converted_query = convert_query(user_query)
     (predicted_categories, scores) = query_class_model.predict(converted_query, 10)
 
-    min_score = 0.5
+    min_score = 0.3
     query_categories = []
     for id in range(len(predicted_categories)):
         if scores[id] >= min_score:
@@ -157,8 +157,7 @@ def query():
     query_class_model = current_app.config["query_model"]
     query_category = get_query_category(user_query, query_class_model)
     print("query_category: {}".format(query_category))
-    print("query_obj: {}".format(query_obj['query']['bool']))
-
+    
     if query_category is not None:
         # print("IMPLEMENT ME: add this into the filters object so that it gets applied at search time.  This should look like your `term` filter from week 1 for department but for categories instead")
         for category in query_category:
@@ -170,9 +169,8 @@ def query():
                 }
             }
 
-            #query_obj['query']['bool']['must'].append(category_filter)
+            query_obj['query'].get('bool', {}).get('must', []).append(category_filter)
 
-    #print("query obj: {}".format(query_obj))
     response = opensearch.search(body=query_obj, index=current_app.config["index_name"], explain=explain)
     # Postprocess results here if you so desire
 
